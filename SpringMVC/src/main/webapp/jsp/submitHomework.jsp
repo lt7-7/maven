@@ -1,14 +1,23 @@
-<%@ page import="org.example.javaee.class03.model.Homework" %>
+<%@ page import="org.example.spring.mvc.model.Homework" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>提交作业</title>
+
+    <style>
+        input,textarea{
+            border: none;
+            outline: none;
+            font-family: arial;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 <h2 align="center" style="margin: 50px">提交作业</h2>
 <div align="center">
     <form method="post" action="${pageContext.request.contextPath}/submit">
-        <table border="1" width="960">
+        <table border="1" width="960" cellspacing="0" cellpadding="0">
             <%
                 Homework homework = (Homework) request.getAttribute("homework");
 

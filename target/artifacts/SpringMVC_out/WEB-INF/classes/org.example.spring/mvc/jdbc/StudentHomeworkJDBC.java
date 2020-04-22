@@ -1,41 +1,47 @@
 package org.example.spring.mvc.jdbc;
 
-import org.example.spring.mvc.model.Homework;
-import org.example.spring.mvc.model.Student;
-import org.example.spring.mvc.model.StudentHomework;
+import org.example.spring.mvc.bean.Homework;
+import org.example.spring.mvc.bean.Student;
+import org.example.spring.mvc.bean.StudentHomework;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+@Configuration
 
 public class StudentHomeworkJDBC {
-    private static String url = "jdbc:mysql://127.0.0.1:3306/school?serverTimezone=UTC";
+    private static ApplicationContext contextSh;
+    static {
+        contextSh = new AnnotationConfigApplicationContext(StudentHomework.class);
+    }
 
-    private static String driverName = "com.mysql.cj.jdbc.Driver";
+    private static ApplicationContext contextS;
+    static {
+        contextS = new AnnotationConfigApplicationContext(Student.class);
+    }
+
+    private static ApplicationContext contextH;
+    static {
+        contextH = new AnnotationConfigApplicationContext(Homework.class);
+    }
 
 
-    /**
-     * 从s_student_homework表读取指定作业id 的所有记录，即某次作业的所有提交记录
-     * @param id 指定的作业id
-     * @return 返回结果list
-     */
-    public static List<StudentHomework> selectAll(String id) {
 
-        try {
-            Class.forName(driverName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public static List<StudentHomework> selectAll(){
 
-        String sqlString = "SELECT * FROM s_student_homework WHERE homework_id=" + id;
+
+        String  sqlString = "select * from s_student_homework";
 
         List<StudentHomework> list = new ArrayList<>();
-        try (Connection connection = DatabasePool.getHikariDataSource().getConnection()) {
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet resultSet = statement.executeQuery(sqlString)) {
-                    //获取执行结果
-                    while (resultSet.next()) {
-                        StudentHomework sh = new StudentHomework();
+
+        try(Connection connection = DatabasePool.getHikariDataSource().getConnection()){
+            try(Statement statement = connection.createStatement()){
+                try(ResultSet resultSet = statement.executeQuery(sqlString)){
+                    while(resultSet.next()){
+                        StudentHomework sh = (StudentHomework) contextSh.getBean("studentHomework");
                         sh.setId(resultSet.getLong("id"));
                         sh.setStudentId(resultSet.getLong("student_id"));
                         sh.setHomeworkId(resultSet.getLong("homework_id"));
@@ -43,179 +49,220 @@ public class StudentHomeworkJDBC {
                         sh.setHomeworkContent(resultSet.getString("homework_content"));
                         list.add(sh);
                     }
+
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-
 
         return list;
     }
+    public static List<Student> selectAllStudent(){
 
 
-    /**
-     * 向s_homework添加作业记录
-     * @param homework  将要添加的homework
-     * @return true/false
-     */
-    public static boolean addHomework(Homework homework){
+        String  sqlString = "select * from s_student";
 
-        try {
-            Class.forName(driverName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        List<Student> list = new ArrayList<>();
 
-        String sqlString = "insert into s_homework (title,content) values(?,?)";
+        try(Connection connection = DatabasePool.getHikariDataSource().getConnection()){
+            try(Statement statement = connection.createStatement()){
+                try(ResultSet resultSet = statement.executeQuery(sqlString)){
+                    while(resultSet.next()){
+                        Student stu = (Student) contextS.getBean("student");
+                        stu.setId(resultSet.getLong("id"));
+                        stu.setName(resultSet.getString("name"));
+                        list.add(stu);
+                    }
 
-        int resultSet = 0;
-        try (Connection connection = DatabasePool.getHikariDataSource().getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement(sqlString)) {
-                ps.setString(1,homework.getTitle());
-                ps.setString(2,homework.getContent());
-                resultSet = ps.executeUpdate(); //指示受影响的行数
-
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
 
-        return resultSet > 0;
+        return list;
     }
+    public static List<Homework> selectAllHomework(){
 
-    /**
-     * 向s_student添加学生
-     * @param student 将要添加的student
-     * @return true/false
-     */
-    public static boolean addStudent(Student student){
 
-        try {
-            Class.forName(driverName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        String  sqlString = "select * from s_homework";
 
-        String sqlString = "insert into s_student (id,name) values(?,?)";
-
-        int resultSet = 0;
-        try (Connection connection = DatabasePool.getHikariDataSource().getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement(sqlString)) {
-                ps.setLong(1,student.getId());
-                ps.setString(2,student.getName());
-                resultSet = ps.executeUpdate();
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return resultSet > 0;
-    }
-
-    /**
-     *从s_homework读取所有作业记录
-     * @return  list
-     */
-    public static List<Homework> showHomework(){
-
-        try {
-            Class.forName(driverName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        String sqlString = "SELECT * FROM s_homework";
 
         List<Homework> list = new ArrayList<>();
-        try (Connection connection = DatabasePool.getHikariDataSource().getConnection()) {
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet resultSet = statement.executeQuery(sqlString)) {
-                    //获取执行结果
-                    while (resultSet.next()) {
-                        Homework homework = new Homework();
-                        homework.setId(resultSet.getLong("id"));
-                        homework.setTitle(resultSet.getString("title"));
-                        homework.setContent(resultSet.getString("content"));
-                        list.add(homework);
+
+        try(Connection connection = DatabasePool.getHikariDataSource().getConnection()){
+            try(Statement statement = connection.createStatement()){
+                try(ResultSet resultSet = statement.executeQuery(sqlString)){
+                    while(resultSet.next()){
+                        Homework hw = (Homework) contextH.getBean("homework");
+                        hw.setId(resultSet.getLong("id"));
+                        hw.setTitle(resultSet.getString("title"));
+                        hw.setContent(resultSet.getString("content"));
+                        list.add(hw);
                     }
+
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-
 
         return list;
     }
+    public boolean addHomework(Homework hw) {
 
-    /**
-     * 从s_homework表读取指定id的作业详细内容
-     * @param id 作业id
-     * @return 作业homework
-     */
-    public static Homework showHomeworkDetails(String id){
+        String sql = "INSERT INTO `school`.`s_homework`(`id`,`title`,`content`,`create_time`,`update_time`) VALUES (?,?,?,?,?)";
 
-        try {
-            Class.forName(driverName);
-        } catch (ClassNotFoundException e) {
+
+        try(Connection connection = DatabasePool.getHikariDataSource().getConnection()){
+            PreparedStatement ps =  connection.prepareStatement(sql);
+            ps.setLong(1,hw.getId());
+            ps.setString(2,hw.getTitle());
+            ps.setString(3,hw.getContent());
+            int count = ps.executeUpdate();
+            ps.close();
+            return count > 0 ? true : false;
+        }catch(SQLException e){
             e.printStackTrace();
         }
-
-        String sqlString = "SELECT * FROM s_homework WHERE id=" + id;
-
-        Homework homework = new Homework();
-        try (Connection connection = DatabasePool.getHikariDataSource().getConnection()) {
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet resultSet = statement.executeQuery(sqlString)) {
-                    //获取执行结果
-                    while (resultSet.next()) {
-                        homework.setId(resultSet.getLong("id"));
-                        homework.setTitle(resultSet.getString("title"));
-                        homework.setContent(resultSet.getString("content"));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-        return homework;
+        return false;
     }
 
-    /**
-     * 向s_student_homework表提交作业
-     * @param studentHomework 作业
-     * @return true/false
-     */
-    public static boolean addStudentHomework(StudentHomework studentHomework){
+    public boolean addStudent(Student stu) {
 
-        try {
-            Class.forName(driverName);
-        } catch (ClassNotFoundException e) {
+        String sql = "INSERT INTO `school`.`s_student`(`id`,`name`,`create_time`,`update_time`) VALUES (?,?,?,?)";
+
+
+        try(Connection connection = DatabasePool.getHikariDataSource().getConnection()){
+            PreparedStatement ps =  connection.prepareStatement(sql);
+            ps.setLong(1,stu.getId());
+            ps.setString(2,stu.getName());
+            int count = ps.executeUpdate();
+            ps.close();
+            return count > 0 ? true : false;
+        }catch(SQLException e){
             e.printStackTrace();
         }
+        return false;
+    }
 
-        String sqlString = "insert into s_student_homework (student_id,homework_id," +
-                "homework_title,homework_content) values(?,?,?,?)";
+    public boolean submitHomework(StudentHomework studentHomework) {
 
-        int resultSet = 0;
+        String sql = "INSERT INTO `school`.`s_student_homework`(`id`,`student_id`,`homework_id`,`homework_title`,`homework_content`,`create_time`,`update_time`) VALUES (?,?,?,?,?,?,?)";
 
-        try (Connection connection = DatabasePool.getHikariDataSource().getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement(sqlString)) {
-                ps.setLong(1,studentHomework.getStudentId());
-                ps.setLong(2,studentHomework.getHomeworkId());
-                ps.setString(3,studentHomework.getHomeworkTitle());
-                ps.setString(4,studentHomework.getHomeworkContent());
-                resultSet = ps.executeUpdate();
 
+        try(Connection connection = DatabasePool.getHikariDataSource().getConnection()){
+            PreparedStatement ps =  connection.prepareStatement(sql);
+            ps.setLong(1,studentHomework.getId());
+            ps.setLong(2,studentHomework.getStudentId());
+            ps.setLong(3,studentHomework.getHomeworkId());
+            ps.setString(4,studentHomework.getHomeworkTitle());
+            ps.setString(5,studentHomework.getHomeworkContent());
+            int count = ps.executeUpdate();
+            ps.close();
+            return count > 0 ? true : false;
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isExistStudent(Long id){
+
+
+        String sql = "SELECT * from `school`.`s_student` where id = ? ";
+        boolean flag = false;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DatabasePool.getHikariDataSource().getConnection();
+            preparedStatement=connection.prepareStatement(sql);
+            preparedStatement.setLong(1,id);
+            resultSet = preparedStatement.executeQuery();
+            //获取执行结果
+            if(resultSet.next()){
+                flag = true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            if(null != resultSet) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(null != preparedStatement) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(null != connection) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return flag;
+    }
 
-        return resultSet > 0;
+    public boolean isExistHomework(Long id){
+
+        String sql = "SELECT * from `school`.`s_homework` where id = ? ";
+        boolean flag = false;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+
+            connection = DatabasePool.getHikariDataSource().getConnection();
+            preparedStatement=connection.prepareStatement(sql);
+            preparedStatement.setLong(1,id);
+            resultSet = preparedStatement.executeQuery();
+            //获取执行结果
+            if(resultSet.next()){
+                flag = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            if(null != resultSet) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(null != preparedStatement) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(null != connection) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return flag;
+    }
+
+
+    public static void main(String[] args) {
+        List<StudentHomework> list = selectAll();
+        for(StudentHomework sh : list){
+            System.out.println(sh.getHomeworkContent());
+        }
     }
 }

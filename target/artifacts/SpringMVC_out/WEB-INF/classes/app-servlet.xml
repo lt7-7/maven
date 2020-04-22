@@ -8,8 +8,5 @@
 
 
     <context:component-scan base-package="org.example.spring.mvc.controller"></context:component-scan>
-    <context:component-scan base-package="org.example.spring.mvc.aspect"></context:component-scan>
-    <context:component-scan base-package="org.example.spring.mvc.bean"></context:component-scan>
-    <context:component-scan base-package="org.example.spring.mvc.service"></context:component-scan>
 
 </beans>

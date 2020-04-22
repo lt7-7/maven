@@ -1,4 +1,4 @@
-<%@ page import="org.example.javaee.class03.model.StudentHomework" %>
+<%@ page import="org.example.spring.mvc.model.StudentHomework" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2 align="center" style="margin: 50px">作业详细内容</h2>
-<table align="center" width="960" border="1">
+<table align="center" width="960" border="1" cellpadding="0" cellspacing="0">
 
     <tr bgcolor="">
         <th width="10%">学号</th>

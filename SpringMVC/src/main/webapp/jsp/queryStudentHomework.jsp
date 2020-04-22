@@ -1,4 +1,4 @@
-<%@ page import="org.example.javaee.class03.model.Homework" %>
+<%@ page import="org.example.spring.mvc.model.Homework" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -15,11 +15,22 @@
         }
     </script>
 
+    <style>
+        input{
+            /*border: none;*/
+            outline: none;
+            font-family: arial;
+            width: 90%;
+            /*display: inline-table;*/
+            /*height: 95%*/
+        }
+    </style>
+
 </head>
 <body>
 <form id="sub" method="get" action="${pageContext.request.contextPath}/query">
     <input id="homeworkId" name="id" type="hidden">
-    <table align="center" width="960" border="1">
+    <table align="center" width="960" border="1" cellspacing="0" cellpadding="0">
         <tr>
             <th width="10%">作业编号</th>
             <th width="80%" style="word-break: break-all;word-wrap: break-word">作业标题</th>

@@ -2,12 +2,8 @@ package org.example.spring.mvc.bean;
 
 import org.example.spring.mvc.jdbc.DatabasePool;
 import org.example.spring.mvc.jdbc.StudentHomeworkJDBC;
-import org.example.spring.mvc.model.Homework;
-import org.example.spring.mvc.model.Student;
-import org.example.spring.mvc.model.StudentHomework;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
