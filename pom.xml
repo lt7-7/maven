@@ -13,7 +13,6 @@
         <module>db</module>
         <module>JavaEE-03</module>
         <module>SpringMVC</module>
-        <module>SpringMVC</module>
     </modules>
 
     <dependencies>

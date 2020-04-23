@@ -13,6 +13,5 @@
     <context:component-scan base-package="org.example.spring.mvc.service"></context:component-scan>
     <context:component-scan base-package="org.example.spring.mvc.aspect"></context:component-scan>
     <context:component-scan base-package="org.example.spring.mvc.jdbc"></context:component-scan>
-    <context:component-scan base-package="org.example.spring.mvc.servlet"></context:component-scan>
 
 </beans>

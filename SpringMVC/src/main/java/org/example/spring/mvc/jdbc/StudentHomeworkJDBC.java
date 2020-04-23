@@ -28,6 +28,9 @@ public class StudentHomeworkJDBC {
         contextH = new AnnotationConfigApplicationContext(Homework.class);
     }
 
+    public StudentHomeworkJDBC getStudentHomeworkJdbc(){
+        return new StudentHomeworkJDBC();
+    }
 
 
     public static List<StudentHomework> selectAll(){
@@ -259,10 +262,4 @@ public class StudentHomeworkJDBC {
     }
 
 
-    public static void main(String[] args) {
-        List<StudentHomework> list = selectAll();
-        for(StudentHomework sh : list){
-            System.out.println(sh.getHomeworkContent());
-        }
-    }
 }
